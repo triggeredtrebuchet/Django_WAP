@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Recipe Demo{% endblock %}
+{% block content %}
+<h1>{{ recipe.title }}</h1>
+<p><strong>Ingredients:</strong></p>
+<ul>
+    {% for recipe_ingredient in recipe.recipe_ingredients.all %}
+                <li>
+                    {{ recipe_ingredient.ingredient.name }}
+                </li>
+    {% empty %}
+    <li>No ingredients found.</li>
+    {% endfor %}
+</ul>
+<p><a href="/accounts/login/">Login</a> to see the instructions and quantities.</p>
+{% endblock %}

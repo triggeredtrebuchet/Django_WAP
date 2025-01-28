@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <h2>Recipe Details</h2>
+        {{ recipe_form.as_p }}
+    </div>
+    <div id="autocomplete" data-url="{% url 'ingredient_autocomplete' %}"></div>
+    <div>
+        <h2>Ingredients</h2>
+        <table id="ingredient-table">
+            {{ formset.management_form }}
+            {% for form, ingredient in forms_with_ingredient_data %}
+            <tr class="ingredient-row" id="form-{{ forloop.counter0 }}">
+                {{ form.id }}
+                <td>
+                    <input id="id_recipe_ingredients-{{ forloop.counter0 }}-ingredient_name" class="autocomplete ui-autocomplete-input" type="text" name="recipe_ingredients-{{ forloop.counter0 }}-ingredient_name" value="{{ ingredient.ingredient_name }}" readonly>
+                </td>
+                <td>{{ form.quantity }}</td>
+                <td class="ingredient-unit">
+                    <input type="text" name="unit_{{ forloop.counter0 }}" value="{{ ingredient.unit }}" readonly>
+                </td>
+                <td>
+                    {{ form.ingredient }}
+                    <div style="display: none" class="delete-field">{{ form.DELETE }}</div>
+                    <button type="button" class="delete-row">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr id="empty-ingredient" style="display: none">
+                <td>{{ formset.empty_form.ingredient_name }}</td>
+                <td>{{ formset.empty_form.quantity }}</td>
+                <td class="ingredient-unit"><input type="text" name="{{ formset.empty_form.unit.name }}" class="ingredient-unit-input" value="{{ formset.empty_form.unit.value|default:'unit' }}" readonly></td>
+                <td>
+                    {{ formset.empty_form.ingredient }}
+                    <div style="display: none" class="delete-field">{{ formset.empty_form.DELETE }}</div>
+                    <button type="button" class="delete-row">Delete</button>
+                </td>
+            </tr>
+        </table>
+
+        <button type="button" id="add-ingredient-button">Add Ingredient</button>
+    </div>
+
+    <button type="submit">Save Recipe</button>
+</form>
+{% endblock %}
